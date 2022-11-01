@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,13 +36,13 @@ public class FeatureListController {
     public List<FeaturedList> findAllFeatureList(){
         return service.findAllList();
     }
-//
+
     @GetMapping("/search_by_name")
     @ResponseStatus(HttpStatus.OK)
     public List<FeaturedList> findByName(@RequestParam String keyword){
         return service.findByKeyword(keyword);
     }
-//
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<FeaturedList> getList(@PathVariable int id){
@@ -56,7 +56,7 @@ public class FeatureListController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FeaturedList> updateEmployee(@PathVariable("id") int listId,
+    public ResponseEntity<FeaturedList> updateFeatures(@PathVariable("id") int listId,
                                                    @RequestBody FeaturedList featuredList){
         return service.getListById(listId)
                 .map(savedList -> {
