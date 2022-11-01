@@ -178,4 +178,13 @@ public class ZenPackServiceImpl implements ZenPackService {
 		}
 		return null;
 	}
+
+	public String setActiveOrInActive(Boolean inActive, Long zenPackId) {
+		Optional<ZenPack> optionalZenPack = repository.findByZenPackId(zenPackId);
+		if(optionalZenPack.isPresent()){
+			optionalZenPack.get().setInActive(inActive);
+			repository.save(optionalZenPack.get());
+		}
+		return "ZenPack id "+ zenPackId + " has Successfully set to " +inActive ;
+	}
 }
