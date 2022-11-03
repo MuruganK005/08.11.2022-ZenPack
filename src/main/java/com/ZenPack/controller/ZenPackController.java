@@ -14,11 +14,11 @@ import com.ZenPack.exception.ZenPackException;
 import com.ZenPack.repository.ExcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ZenPack.Dto.ReportDto;
 import com.ZenPack.Dto.SearchFilterDto;
 import com.ZenPack.Dto.SortSpecificationDto;
 import com.ZenPack.Dto.SpecificationDto;
@@ -138,18 +138,19 @@ public class ZenPackController {
     }
     
     @GetMapping("/export/excel")//new one
-    public void exportToExcel(HttpServletResponse response) throws IOException {
+    public void exportToExcel(@RequestBody SearchFilterDto searchFilterDto, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
         String headervalue = "attachment; filename=ZenPack_info"+currentDateTime+".xlsx";
-
+        response.setContentType(searchFilterDto.toString());
         response.setHeader(headerKey, headervalue);
-        List<ZenPack> listStudent = excelRepository.findAll();
-        ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent);
-        exp.export(response);
+        PageRequest pageRequest = PageRequest.of(searchFilterDto.getStartRow(),searchFilterDto.getEndRow());
+        Page<ZenPack> listStudent = excelRepository.findAll(pageRequest);
+        ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent.getContent());
+        exp.export(searchFilterDto,response);
     }
 
     @DeleteMapping("/set_in_active/{zenPackId}")

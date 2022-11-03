@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ZenPack.Dto.ReportDto;
 import com.ZenPack.Dto.ZenPackDto;
 import com.ZenPack.Specification.SearchRequest;
 import com.ZenPack.Specification.SearchSpecification;

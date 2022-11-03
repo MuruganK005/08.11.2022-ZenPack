@@ -1,5 +1,6 @@
 package com.ZenPack.excel;
 
+import com.ZenPack.Dto.SearchFilterDto;
 import com.ZenPack.model.ZenPack;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -57,7 +58,7 @@ public class ZenPackExcelExporter {      //new one
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setFillBackgroundColor((short) 215);
         createCell(row, 0, "ZenPack Information", style);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
         font.setFontHeightInPoints((short) (10));
 
         row = sheet.createRow(1);
@@ -69,6 +70,7 @@ public class ZenPackExcelExporter {      //new one
         createCell(row, 2, "Created By", style);
         createCell(row, 3, "Updated Time", style);
         createCell(row, 4, "Updated By", style);
+        createCell(row, 5, "Status", style);
 
     }
 
@@ -94,10 +96,11 @@ public class ZenPackExcelExporter {      //new one
             createCell(row, columnCount++, zen.getCreatedBy(), style);
             createCell(row, columnCount++, zen.getUpdatedTime().toString(), style);
             createCell(row, columnCount++, zen.getUpdatedBy(), style);
+            createCell(row, columnCount++, zen.getInActive(), style);
         }
     }
 
-    public void export(HttpServletResponse response) throws IOException {
+    public void export(SearchFilterDto searchFilterDto, HttpServletResponse response) throws IOException {
         writeHeaderLine();
         writeDataLines();
 
