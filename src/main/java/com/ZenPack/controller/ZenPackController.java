@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.ZenPack.Dto.ReportDto;
 import com.ZenPack.Dto.SearchFilterDto;
 import com.ZenPack.Dto.SortSpecificationDto;
 import com.ZenPack.Dto.SpecificationDto;
@@ -28,6 +29,8 @@ import com.ZenPack.Specification.SearchRequest;
 import com.ZenPack.Specification.SortDirection;
 import com.ZenPack.Specification.SortRequest;
 import com.ZenPack.Specification.ZenpackOperator;
+import com.ZenPack.model.Report;
+import com.ZenPack.model.ReportColumns;
 import com.ZenPack.model.ZenPack;
 import com.ZenPack.repository.ZenPackRepository;
 import com.ZenPack.service.Impl.ZenPackServiceImpl;
@@ -157,6 +160,32 @@ public class ZenPackController {
     @PutMapping("/setActiveOrInActive")
     public String setActiveOrInActive(@RequestParam Boolean inActive,@RequestParam Long zenPackId){
         return service.setActiveOrInActive(inActive,zenPackId);
+    }
+    
+
+    
+    @PostMapping("/searchReport")
+    public ResponseEntity<Page<Report>> getReportBySpecification(@RequestBody SpecificationDto specificationDto){
+        ResponseEntity<Page<Report>> response = specificationService.getReportBySpecification(specificationDto);
+        return new ResponseEntity<>(response.getBody(),response.getStatusCode());
+    }
+    
+    @PostMapping("/searchReportByFilter")
+    public Page<Report> searchReport(@RequestBody SearchFilterDto request) {
+    	
+        return service.searchReport(getSearchRequest(request));
+    }
+    
+    @PostMapping("/searchReportColumns")
+    public ResponseEntity<Page<ReportColumns>> getReportColumnsBySpecification(@RequestBody SpecificationDto specificationDto){
+        ResponseEntity<Page<ReportColumns>> response = specificationService.getReportColumnsBySpecification(specificationDto);
+        return new ResponseEntity<>(response.getBody(),response.getStatusCode());
+    }
+    
+    @PostMapping("/searchReportColumnsByFilter")
+    public Page<ReportColumns> searchReportColumns(@RequestBody SearchFilterDto request) {
+    	
+        return service.searchReportColumns(getSearchRequest(request));
     }
 
 }

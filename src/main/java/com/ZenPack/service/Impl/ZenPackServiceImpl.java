@@ -21,12 +21,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.ZenPack.Dto.ReportDto;
 import com.ZenPack.Dto.ZenPackDto;
 import com.ZenPack.Specification.SearchRequest;
 import com.ZenPack.Specification.SearchSpecification;
+import com.ZenPack.model.Report;
+import com.ZenPack.model.ReportColumns;
 import com.ZenPack.model.ReportHeader;
 import com.ZenPack.model.ZenPack;
+import com.ZenPack.repository.ReportColumnsRepository;
 import com.ZenPack.repository.ReportHeaderRepository;
+import com.ZenPack.repository.ReportRepository;
 import com.ZenPack.repository.ZenPackRepository;
 import com.ZenPack.service.Services.ZenPackService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,6 +48,12 @@ public class ZenPackServiceImpl implements ZenPackService {
 
 	@Autowired
 	private ReportHeaderRepository reportHeaderRepo;
+	
+	@Autowired
+	private ReportRepository reportRepository;
+	
+	@Autowired
+	private ReportColumnsRepository reportColumnsRepository;
 
 	@Autowired
 	private EntityManager manager;
@@ -187,4 +198,19 @@ public class ZenPackServiceImpl implements ZenPackService {
 		}
 		return "ZenPack id "+ zenPackId + " has Successfully set to " +inActive ;
 	}
+
+	public Page<Report> searchReport(SearchRequest request) {
+		SearchSpecification<Report> specification = new SearchSpecification<>(request);
+		Pageable pageable = SearchSpecification.getPageable(request.getPage(), request.getSize());
+		return reportRepository.findAll(specification, pageable);
+	}
+
+	public Page<ReportColumns> searchReportColumns(SearchRequest searchRequest) {
+		SearchSpecification<ReportColumns> specification = new SearchSpecification<>(searchRequest);
+		Pageable pageable = SearchSpecification.getPageable(searchRequest.getPage(), searchRequest.getSize());
+		return reportColumnsRepository.findAll(specification,pageable);
+	}
+	
+
+	
 }
