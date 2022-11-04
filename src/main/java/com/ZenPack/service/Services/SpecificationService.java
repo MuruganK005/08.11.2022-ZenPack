@@ -8,6 +8,7 @@ import com.ZenPack.Specification.ZenPackSpecification;
 import com.ZenPack.model.Report;
 import com.ZenPack.model.ReportColumns;
 import com.ZenPack.model.ZenPack;
+import com.ZenPack.repository.ReportRepository;
 import com.ZenPack.repository.ZenPackRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import java.util.List;
 public class SpecificationService {
     @Autowired
     private ZenPackRepository repository;
+    
+    @Autowired ReportRepository reportRepository;
 
     public ResponseEntity<Page<ZenPack>> getBySpecification(SpecificationDto specificationDto) {
         ModelMapper modelMapper = new ModelMapper();
@@ -38,7 +41,7 @@ public class SpecificationService {
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
         Sort.Direction sort = Sort.Direction.ASC;
         ReportSpecification spec = new ReportSpecification(specificationDto);
-        Page<Report> reports=repository.findAll(spec, Pageable.unpaged());
+        Page<Report> reports=reportRepository.findAll(spec, Pageable.unpaged());
         return new ResponseEntity<>(reports,HttpStatus.OK);
     }
 

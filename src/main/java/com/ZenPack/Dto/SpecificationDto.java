@@ -12,7 +12,4 @@ public class SpecificationDto {
     private String operation;
     private String value;
     private List<?> vaLues;
-
-
-
 }

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.ZenPack.model.ReportColumns;
 
 public interface ReportColumnsRepository extends JpaRepository<ReportColumns, Long>, JpaSpecificationExecutor<ReportColumns>{
-
+	
 }

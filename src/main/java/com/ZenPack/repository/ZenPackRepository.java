@@ -23,8 +23,5 @@ public interface ZenPackRepository extends JpaRepository<ZenPack,Integer>, JpaSp
     
     Optional<ZenPack> findByName(String name);
 
-    Page<Report> findAll(ReportSpecification spec, Pageable unpaged);
-
-
 //    Page<ReportColumns> findAll(ReportColumnsSpecification spec, Pageable unpaged);
 }
