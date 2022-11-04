@@ -179,7 +179,8 @@ public class ZenPackController {
     
     @PostMapping("/searchReportColumns")
     public ResponseEntity<Page<ReportColumns>> getReportColumnsBySpecification(@RequestBody SpecificationDto specificationDto){
-        ResponseEntity<Page<ReportColumns>> response = specificationService.getReportColumnsBySpecification(specificationDto);
+        ResponseEntity<Page<ReportColumns>> response = null;
+//        		specificationService.getReportColumnsBySpecification(specificationDto);
         return new ResponseEntity<>(response.getBody(),response.getStatusCode());
     }
     

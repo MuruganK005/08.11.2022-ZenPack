@@ -42,12 +42,13 @@ public class SpecificationService {
         return new ResponseEntity<>(reports,HttpStatus.OK);
     }
 
-    public ResponseEntity<Page<ReportColumns>> getReportColumnsBySpecification(SpecificationDto specificationDto) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        Sort.Direction sort = Sort.Direction.ASC;
-        ReportColumnsSpecification spec = new ReportColumnsSpecification(specificationDto);
-        Page<ReportColumns> reportColumns=repository.findAll(spec, Pageable.unpaged());
-        return new ResponseEntity<>(reportColumns,HttpStatus.OK);
-    }
-}
+	/*
+	 * public ResponseEntity<Page<ReportColumns>>
+	 * getReportColumnsBySpecification(SpecificationDto specificationDto) {
+	 * ModelMapper modelMapper = new ModelMapper();
+	 * modelMapper.getConfiguration().setAmbiguityIgnored(true); Sort.Direction sort
+	 * = Sort.Direction.ASC; ReportColumnsSpecification spec = new
+	 * ReportColumnsSpecification(specificationDto); Page<ReportColumns>
+	 * reportColumns=repository.findAll(spec, Pageable.unpaged()); return new
+	 * ResponseEntity<>(reportColumns,HttpStatus.OK); }
+	 */}
