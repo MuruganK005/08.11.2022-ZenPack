@@ -64,5 +64,4 @@ public class ZenPack {
     @Column(name = "in_active")
     private Boolean inActive=false;
 
-
 }

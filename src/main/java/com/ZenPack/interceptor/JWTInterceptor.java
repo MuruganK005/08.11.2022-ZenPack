@@ -1,3 +1,4 @@
+/*
 package com.ZenPack.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,3 +29,4 @@ public class JWTInterceptor implements AsyncHandlerInterceptor {
     }
 
 }
+*/

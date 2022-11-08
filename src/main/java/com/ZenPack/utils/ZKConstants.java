@@ -1,3 +1,4 @@
+/*
 package com.ZenPack.utils;
 
 public class ZKConstants {
@@ -134,3 +135,4 @@ public class ZKConstants {
 	public static String ZENFRA_USER_GROUP_NAME = "zenuser";
 	public static String IS_USER_RELATED_CED = "is_user_related_ced";
 }
+*/

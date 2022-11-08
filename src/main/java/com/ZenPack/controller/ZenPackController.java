@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.ZenPack.Dto.*;
+import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
 import com.ZenPack.excel.ZenPackExcelExporter;
 import com.ZenPack.exception.ZenPackException;
 import com.ZenPack.repository.ExcelRepository;
@@ -19,10 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ZenPack.Dto.SearchFilterDto;
-import com.ZenPack.Dto.SortSpecificationDto;
-import com.ZenPack.Dto.SpecificationDto;
-import com.ZenPack.Dto.ZenPackDto;
 import com.ZenPack.Specification.FieldType;
 import com.ZenPack.Specification.FilterRequest;
 import com.ZenPack.Specification.SearchRequest;
@@ -61,20 +59,10 @@ public class ZenPackController {
         return service.saveZenPack(zenPack);
     }
 
-//    @PostMapping("/create")
-//    public ResponseEntity<ZenPackDto> createZenPack(@RequestBody ZenPackDto zenPackDto){
-//        if(zenPackDto == null || service.checkZenPackName(zenPackDto.getName())){
-//    		return new ResponseEntity<>(null,HttpStatus.EXPECTATION_FAILED);
-//    	}
-//        return service.createZenPack(zenPackDto);
-//    }
-
     @PostMapping("/create")
     public ResponseEntity<ZenPackDto> createZenPack(@RequestBody ZenPackDto zenPackDto) throws ZenPackException, ZenPackException {
         return service.createZenPack(zenPackDto);
     }
-
-
     @GetMapping(value = "get_all",produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ZenPackDto> getAllZenPack() throws JsonProcessingException {
         return service.getAllZenPack();
@@ -97,18 +85,15 @@ public class ZenPackController {
         ResponseEntity<Page<ZenPack>> response = specificationService.getBySpecification(specificationDto);
         return new ResponseEntity<>(response.getBody(),response.getStatusCode());
     }
-    
     @PostMapping("/searchZenPack")
     public Page<ZenPack> searchZenPack(@RequestBody SearchFilterDto request) {
     	
         return service.searchZenPack(getSearchRequest(request));
     }
-    
     @GetMapping(value = "checkZenPackName",produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean checkZenPackNameExists(@RequestParam String name) throws JsonProcessingException {
         return service.checkZenPackName(name);
     }
-
     private SearchRequest getSearchRequest(SearchFilterDto searchFilter) {
     	SearchRequest request = new SearchRequest();
     	Map<String, Map<String,String>> filter = searchFilter.getFilterModel();
@@ -136,7 +121,6 @@ public class ZenPackController {
     	request.setSorts(sortRequest);
     	return request;
     }
-    
     @GetMapping("/export/excel")//new one
     public void exportToExcel(@RequestBody SearchFilterDto searchFilterDto, HttpServletResponse response) throws IOException {
 
@@ -152,42 +136,38 @@ public class ZenPackController {
         ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent.getContent());
         exp.export(searchFilterDto,response);
     }
-
     @DeleteMapping("/set_in_active/{zenPackId}")
     public String setZenPackActiveOrInActive(@PathVariable Long zenPackId){
         return  service.setActiveOrInActive(zenPackId);
     }
-
     @PutMapping("/setActiveOrInActive")
     public String setActiveOrInActive(@RequestParam Boolean inActive,@RequestParam Long zenPackId){
         return service.setActiveOrInActive(inActive,zenPackId);
     }
-    
-
     
     @PostMapping("/searchReport")
     public ResponseEntity<Page<Report>> getReportBySpecification(@RequestBody SpecificationDto specificationDto){
         ResponseEntity<Page<Report>> response = specificationService.getReportBySpecification(specificationDto);
         return new ResponseEntity<>(response.getBody(),response.getStatusCode());
     }
-    
     @PostMapping("/searchReportByFilter")
     public Page<Report> searchReport(@RequestBody SearchFilterDto request) {
     	
         return service.searchReport(getSearchRequest(request));
     }
-    
     @PostMapping("/searchReportColumns")
     public ResponseEntity<Page<ReportColumns>> getReportColumnsBySpecification(@RequestBody SpecificationDto specificationDto){
         ResponseEntity<Page<ReportColumns>> response = null;
-//        		specificationService.getReportColumnsBySpecification(specificationDto);
         return new ResponseEntity<>(response.getBody(),response.getStatusCode());
     }
-    
     @PostMapping("/searchReportColumnsByFilter")
     public Page<ReportColumns> searchReportColumns(@RequestBody SearchFilterDto request) {
     	
         return service.searchReportColumns(getSearchRequest(request));
+    }
+    @PostMapping("/search_zen_pack_list")
+    public List<ZenPack> getList(@RequestBody ZenPackFilterDTO zenpackFilterDTO) {
+        return service.getList(zenpackFilterDTO);
     }
 
 }

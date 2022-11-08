@@ -13,5 +13,4 @@ import com.ZenPack.model.Report;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long>, JpaSpecificationExecutor<Report>{
-	
 }

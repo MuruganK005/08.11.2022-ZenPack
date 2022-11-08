@@ -1,3 +1,4 @@
+/*
 package com.ZenPack;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,4 +29,4 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD");
     }
-}
+}*/

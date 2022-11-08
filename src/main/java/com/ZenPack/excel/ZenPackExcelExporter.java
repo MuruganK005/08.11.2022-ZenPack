@@ -1,6 +1,6 @@
 package com.ZenPack.excel;
 
-import com.ZenPack.Dto.SearchFilterDto;
+import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
 import com.ZenPack.model.ZenPack;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;

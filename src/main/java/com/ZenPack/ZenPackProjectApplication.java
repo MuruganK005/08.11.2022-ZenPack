@@ -1,11 +1,11 @@
 package com.ZenPack;
 
-import javax.annotation.PostConstruct;
+/*import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import com.ZenPack.utils.DataSourceConnection;
 import com.ZenPack.utils.ZKModel;
-import com.ZenPack.utils.ZookeeperConnection;
-import org.apache.zookeeper.KeeperException;
+import com.ZenPack.utils.ZookeeperConnection;*/
+/*import org.apache.zookeeper.KeeperException;*/
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,22 +31,22 @@ import java.io.IOException;
 @ComponentScan
 public class ZenPackProjectApplication extends SpringBootServletInitializer {
 	
-	@Value("${postgresurl}")
-	private  String server;
+/*	@Value("${postgresurl}")
+	private  String server;*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(ZenPackProjectApplication.class, args);
 	}
-	@Bean
+/*	@Bean
 	public Docket productApi() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(RequestHandlerSelectors.basePackage("com.ZenPack")).build();
-	}
+	}*/
 	@Bean
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
 	}
-	@EventListener(ApplicationReadyEvent.class)
+/*	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() throws IOException, KeeperException, InterruptedException
 	{
 		ZookeeperConnection zkConnection = new ZookeeperConnection();
@@ -55,12 +55,12 @@ public class ZenPackProjectApplication extends SpringBootServletInitializer {
 		Utilities utilites = new Utilities();
 		//DataSourceConnection dataSource = new DataSourceConnection();
 
-	}
+	}*/
 	
-	@PostConstruct
+/*	@PostConstruct
 	public void print() {
 		System.out.println(server);
-	}
+	}*/
     
 /*	@Bean
 	public Jackson2ObjectMapperBuilder objectMapperBuilder() {

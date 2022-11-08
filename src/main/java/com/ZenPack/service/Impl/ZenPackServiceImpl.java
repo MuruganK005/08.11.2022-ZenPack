@@ -10,13 +10,20 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import com.ZenPack.Dto.FilterDTO;
+import com.ZenPack.Dto.ZenPackFilterDTO;
+import com.ZenPack.Specification.ZenPackNewSpecification;
+import com.ZenPack.Specification.ZenPackSpecification;
 import com.ZenPack.exception.ZenPackException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -56,6 +63,9 @@ public class ZenPackServiceImpl implements ZenPackService {
 
 	@Autowired
 	private EntityManager manager;
+
+	@Autowired
+	private ZenPackNewSpecification specification;
 
 	private static final Logger logger = LoggerFactory.getLogger(ZenPackServiceImpl.class);
 
@@ -188,7 +198,6 @@ public class ZenPackServiceImpl implements ZenPackService {
 		}
 		return null;
 	}
-
 	public String setActiveOrInActive(Boolean inActive, Long zenPackId) {
 		Optional<ZenPack> optionalZenPack = repository.findByZenPackId(zenPackId);
 		if(optionalZenPack.isPresent()){
@@ -197,19 +206,51 @@ public class ZenPackServiceImpl implements ZenPackService {
 		}
 		return "ZenPack id "+ zenPackId + " has Successfully set to " +inActive ;
 	}
-
 	public Page<Report> searchReport(SearchRequest request) {
 		SearchSpecification<Report> specification = new SearchSpecification<>(request);
 		Pageable pageable = SearchSpecification.getPageable(request.getPage(), request.getSize());
 		return reportRepository.findAll(specification, pageable);
 	}
-
 	public Page<ReportColumns> searchReportColumns(SearchRequest searchRequest) {
 		SearchSpecification<ReportColumns> specification = new SearchSpecification<>(searchRequest);
 		Pageable pageable = SearchSpecification.getPageable(searchRequest.getPage(), searchRequest.getSize());
 		return reportColumnsRepository.findAll(specification,pageable);
 	}
-	
+	public void create(ZenPackDto zenpackDTO) {
+		ZenPack zenpack = new ZenPack();
+		zenpack.setName("name");
+		repository.save(zenpack);
+	}
 
-	
+	public List<ZenPack> getList(ZenPackFilterDTO zenpackFilterDTO) {
+
+		ArrayList<Specification<ZenPack>> zenpackSpecifications = new ArrayList<Specification<ZenPack>>();
+		for (FilterDTO zenpackDTO : zenpackFilterDTO.getFilterDTOList()) {
+			zenpackSpecifications.add(specification.getZenpacks(zenpackDTO));
+		}
+		if (zenpackSpecifications.isEmpty()) {
+			PageRequest pageRequest = PageRequest.of(zenpackFilterDTO.getPage(), zenpackFilterDTO.getSize(), Sort.Direction.ASC, zenpackFilterDTO.getField());
+			if (zenpackFilterDTO.getSortType().equals("desc")) {
+				pageRequest = PageRequest.of(zenpackFilterDTO.getPage(), zenpackFilterDTO.getSize(), Sort.Direction.DESC, zenpackFilterDTO.getField());
+			}
+			return repository.findAll(pageRequest).getContent();
+		}
+		Specification<ZenPack> spec = zenpackSpecifications.get(0);
+		if (zenpackSpecifications.size() > 1) {
+			for (int i = 0; i<zenpackSpecifications.size(); i++) {
+				spec = spec.and(zenpackSpecifications.get(i));
+			}
+		}
+		return getPagedPlays(spec, zenpackFilterDTO.getPage(), zenpackFilterDTO.getSize(), zenpackFilterDTO).getContent();
+	}
+	public Page<ZenPack>  getPagedPlays(Specification<ZenPack> spec, Integer page, Integer size, ZenPackFilterDTO zenpackFilterDTO) {
+		PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.ASC, zenpackFilterDTO.getField());
+		if (zenpackFilterDTO.getSortType().equals("desc")) {
+			pageRequest = PageRequest.of(page, size, Sort.Direction.DESC, zenpackFilterDTO.getField());
+		}
+		if (zenpackFilterDTO.getFilterDTOList().isEmpty()) {
+			return repository.findAll(pageRequest);
+		}
+		return repository.findAll(spec, pageRequest);
+	}
 }

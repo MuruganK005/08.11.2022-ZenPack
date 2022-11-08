@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class MenuDto {
-
     private String createdTime;
     private String createdBy;
     private Integer parentMenuId;
@@ -22,5 +21,4 @@ public class MenuDto {
     private Boolean isSettingMenu;
     private Boolean droppable;
     private String featureUrl;
-
 }

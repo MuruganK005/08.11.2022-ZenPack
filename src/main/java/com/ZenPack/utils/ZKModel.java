@@ -1,3 +1,4 @@
+/*
 package com.ZenPack.utils;
 
 import java.io.Serializable;
@@ -5,9 +6,11 @@ import java.util.Map;
 
 public class ZKModel implements Serializable {
 	
-	/**
+	*/
+/**
 	 * 
-	 */
+	 *//*
+
 	private static final long serialVersionUID = 7866626096609066221L;
 	public static Map<String, String> zkData;
 
@@ -24,3 +27,4 @@ public class ZKModel implements Serializable {
 	}
 
 }
+*/

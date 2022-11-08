@@ -35,7 +35,6 @@ public class SpecificationService {
         Page<ZenPack> zenPacks=repository.findAll(spec, Pageable.unpaged());
         return new ResponseEntity<>(zenPacks,HttpStatus.OK);
     }
-
     public ResponseEntity<Page<Report>> getReportBySpecification(SpecificationDto specificationDto) {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setAmbiguityIgnored(true);

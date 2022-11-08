@@ -30,10 +30,9 @@ public class SearchSpecification<T> implements Specification<T> {
         Predicate predicate = cb.equal(cb.literal(Boolean.TRUE), Boolean.TRUE);
 
         for (FilterRequest filter : this.request.getFilters()) {
-            log.info("Filter: {} {} {}", filter.getKey(), filter.getOperator().toString(), filter.getValue());
+            log.info("Filter: {} {} {}", filter.getKey(), filter.getOperator().toString(), filter.getValue().toString(),filter.getValues().toString(),filter.getValueTo().toString());
             predicate = filter.getOperator().build(root, cb, filter, predicate);
         }
-
         List<Order> orders = new ArrayList<>();
         for (SortRequest sort : this.request.getSorts()) {
             orders.add(sort.getDirection().build(root, cb, sort));
