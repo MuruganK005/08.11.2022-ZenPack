@@ -1,6 +1,7 @@
 package com.ZenPack.controller;
 
 
+import com.ZenPack.Dto.FilterNewDTO.SpecificationResponse;
 import com.ZenPack.Dto.ZenPackFilterDTO;
 import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
 import com.ZenPack.model.Report;

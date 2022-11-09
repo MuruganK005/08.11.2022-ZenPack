@@ -1,10 +1,13 @@
 package com.ZenPack.Dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class SortSpecificationDto {
 
 	private String sort;

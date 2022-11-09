@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ZenPack.Dto.*;
+import com.ZenPack.Dto.FilterNewDTO.SpecificationResponse;
 import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
 import com.ZenPack.excel.ZenPackExcelExporter;
 import com.ZenPack.exception.ZenPackException;
@@ -136,20 +137,23 @@ public class ZenPackController {
         ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent.getContent());
         exp.export(searchFilterDto,response);
     }
+
     @DeleteMapping("/set_in_active/{zenPackId}")
     public String setZenPackActiveOrInActive(@PathVariable Long zenPackId){
         return  service.setActiveOrInActive(zenPackId);
     }
+
     @PutMapping("/setActiveOrInActive")
     public String setActiveOrInActive(@RequestParam Boolean inActive,@RequestParam Long zenPackId){
         return service.setActiveOrInActive(inActive,zenPackId);
     }
-    
+
     @PostMapping("/searchReport")
     public ResponseEntity<Page<Report>> getReportBySpecification(@RequestBody SpecificationDto specificationDto){
         ResponseEntity<Page<Report>> response = specificationService.getReportBySpecification(specificationDto);
         return new ResponseEntity<>(response.getBody(),response.getStatusCode());
     }
+
     @PostMapping("/searchReportByFilter")
     public Page<Report> searchReport(@RequestBody SearchFilterDto request) {
     	
@@ -160,13 +164,15 @@ public class ZenPackController {
         ResponseEntity<Page<ReportColumns>> response = null;
         return new ResponseEntity<>(response.getBody(),response.getStatusCode());
     }
+
     @PostMapping("/searchReportColumnsByFilter")
     public Page<ReportColumns> searchReportColumns(@RequestBody SearchFilterDto request) {
     	
         return service.searchReportColumns(getSearchRequest(request));
     }
+
     @PostMapping("/search_zen_pack_list")
-    public List<ZenPack> getList(@RequestBody ZenPackFilterDTO zenpackFilterDTO) {
+    public SpecificationResponse getList(@RequestBody SearchFilterDto zenpackFilterDTO) {
         return service.getList(zenpackFilterDTO);
     }
 
