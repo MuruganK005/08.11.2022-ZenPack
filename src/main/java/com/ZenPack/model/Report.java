@@ -3,12 +3,7 @@ package com.ZenPack.model;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.ZenPack.Dto.FeatureDto;
 import com.ZenPack.Dto.MenuDto;
@@ -29,7 +24,7 @@ public class Report{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "report_id")
-	private long id;
+	private Long id;
 	@Column(name = "feature")
 	private String feature;
 	@Column(name = "category")
@@ -40,5 +35,7 @@ public class Report{
 	private String discoveryType;
 	@Column(name = "analytics_by")
 	private String analyticsBy;
+
+
 
 }

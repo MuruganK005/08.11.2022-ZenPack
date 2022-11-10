@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import com.ZenPack.Dto.FilterNewDTO.SpecificationResponse;
 import com.ZenPack.Dto.SortSpecificationDto;
 import com.ZenPack.Dto.ZenPackFilterDTO;
-import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
+import com.ZenPack.Dto.SearchFilterDto;
 import com.ZenPack.Specification.ZenPackNewSpecification;
 import com.ZenPack.exception.ZenPackException;
 import org.modelmapper.ModelMapper;
@@ -222,22 +222,23 @@ public class ZenPackServiceImpl implements ZenPackService {
 
 	public SpecificationResponse getList(SearchFilterDto zenpackFilterDTO) {
 
-
+		SpecificationResponse response=new SpecificationResponse();
+		if (zenpackFilterDTO.getFilterModel().isEmpty()&& zenpackFilterDTO.getSortModel().isEmpty()) {
+			response.setData(Collections.singletonList(repository.findAll(Sort.by("name").ascending())));
+			response.setLastRow(repository.findAll().size());
+			return response;
+		}
 		String[] columnName=zenpackFilterDTO.getFilterModel().entrySet().stream().findFirst().get().getKey().split("~");
 		Specification<ZenPack> specificationZenpacks=null;
-		/*ArrayList<Specification<ZenPack>> zenpackSpecifications = new ArrayList<Specification<ZenPack>>();*/
 		for (Map<String, String> zenpackDTO : zenpackFilterDTO.getFilterModel().values()) {
 			specificationZenpacks=specification.getZenpacks(zenpackDTO.get("type"),zenpackDTO.get("filter"),columnName[1]);
-
 		}
 		SpecificationResponse response1=new SpecificationResponse();
 		if (zenpackFilterDTO.getStartRow()>repository.findAll(specificationZenpacks).size()){
-			/*zenpackFilterDTO.setStartRow(repository.findAll(specificationZenpacks).size());*/
 				return response1;
 		}
 		if (zenpackFilterDTO.getEndRow()>repository.findAll(specificationZenpacks).size()){
 			zenpackFilterDTO.setEndRow(repository.findAll(specificationZenpacks).size());
-		/*	return Collections.emptyList();*/
 		}
 			Sort sort = Sort.by("name").ascending();
 			for(SortSpecificationDto sortModel: zenpackFilterDTO.getSortModel()) {
@@ -247,25 +248,9 @@ public class ZenPackServiceImpl implements ZenPackService {
 					sort = Sort.by(sortModel.getColId()).descending();
 				}
 			}
-			SpecificationResponse response=new SpecificationResponse();
 			response.setData(Collections.singletonList(repository.findAll(specificationZenpacks, sort).subList(zenpackFilterDTO.getStartRow(), zenpackFilterDTO.getEndRow())));
 			response.setLastRow(repository.findAll(specificationZenpacks, sort).size());
-		//Sort.by("name").ascending();
-		return response;
-		/*if (zenpackSpecifications.isEmpty()) {
-			PageRequest pageRequest = PageRequest.of(zenpackFilterDTO.getPage(), zenpackFilterDTO.getSize(), Sort.Direction.ASC, zenpackFilterDTO.getField());
-			if (zenpackFilterDTO.getSortType().equals("desc")) {
-				pageRequest = PageRequest.of(zenpackFilterDTO.getPage(), zenpackFilterDTO.getSize(), Sort.Direction.DESC, zenpackFilterDTO.getField());
-			}
-			return repository.findAll(pageRequest).getContent();
-		}*/
-		/*Specification<ZenPack> spec = zenpackSpecifications.get(0);
-		if (zenpackSpecifications.size() > 1) {
-			for (int i = 0; i<zenpackSpecifications.size(); i++) {
-				spec = spec.and(zenpackSpecifications.get(i));
-			}
-		}
-		return getPagedPlays(spec, zenpackFilterDTO.getPage(), zenpackFilterDTO.getSize(), zenpackFilterDTO).getContent();*/
+			return response;
 	}
 	public Page<ZenPack>  getPagedPlays(Specification<ZenPack> spec, Integer page, Integer size, ZenPackFilterDTO zenpackFilterDTO) {
 		PageRequest pageRequest = PageRequest.of(page, size, Sort.Direction.ASC, zenpackFilterDTO.getField());

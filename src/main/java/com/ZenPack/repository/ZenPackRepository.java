@@ -14,7 +14,4 @@ public interface ZenPackRepository extends JpaRepository<ZenPack,Integer>,JpaSpe
     
     Optional<ZenPack> findByName(String name);
 
-   /* @Query("select p from Zenpack p where p.updatedTime >= :startDate and p.updatedTime <= :endDate")
-    public Page<ZenPack> getZenpackByDateRange(String startDate, String endDate, Specification<ZenPack> spec, PageRequest pageRequest);
-*/
 }

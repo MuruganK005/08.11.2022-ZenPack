@@ -1,6 +1,5 @@
 package com.ZenPack.excel;
 
-import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
 import com.ZenPack.model.ZenPack;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -10,11 +9,11 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class ZenPackExcelExporter {      //new one
         cell.setCellStyle(style);
     }
 
-    private void writeHeaderLine() {
+    private void writeHeaderLine(ExcelRequest excelRequest) {
         sheet = workbook.createSheet("ZenPack");
 
         Row row = sheet.createRow(0);
@@ -65,16 +64,38 @@ public class ZenPackExcelExporter {      //new one
         font.setBold(true);
         font.setFontHeight(16);
         style.setFont(font);
-        createCell(row, 0, "ZenPack Name", style);
-        createCell(row, 1, "Created Date", style);
-        createCell(row, 2, "Created By", style);
-        createCell(row, 3, "Updated Time", style);
-        createCell(row, 4, "Updated By", style);
-        createCell(row, 5, "Status", style);
+        int column_Count=0;
+        if (Arrays.asList(excelRequest.getColumnsVisible()).contains("ZenPack Name")){
+            createCell(row, column_Count, "ZenPack Name", style);
+            column_Count++;
+        } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Created Date")) {
+            createCell(row, column_Count, "Created Date", style);
+            column_Count++;
+        } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Created By")) {
+            createCell(row, column_Count, "Created By", style);
+            column_Count++;
+        }  if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Updated Time")) {
+            createCell(row, column_Count, "Updated Time", style);
+            column_Count++;
+        }  if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Updated By")) {
+            createCell(row, column_Count, "Updated By", style);
+            column_Count++;
+        }  if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Status")) {
+            createCell(row, column_Count, "Status", style);
+            column_Count++;
 
+        }
+        if (Arrays.asList(excelRequest.getColumnsVisible()).isEmpty()) {
+            createCell(row, 0, "ZenPack Name", style);
+            createCell(row, 1, "Created Date", style);
+            createCell(row, 2, "Created By", style);
+            createCell(row, 3, "Updated Time", style);
+            createCell(row, 4, "Updated By", style);
+            createCell(row, 5, "Status", style);
+        }
     }
 
-    private void writeDataLines() {
+    private void writeDataLines(ExcelRequest excelRequest) {
         int rowCount = 2;
 
         CellStyle style = workbook.createCellStyle();
@@ -87,22 +108,35 @@ public class ZenPackExcelExporter {      //new one
                 new SimpleDateFormat("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
 
         System.out.println("Current Date: " + ft.format(dNow));
-
         for (ZenPack zen : listZenPack) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
-            createCell(row, columnCount++, zen.getName(), style);
-            createCell(row, columnCount++, zen.getCreatedDate().toString(), style);
-            createCell(row, columnCount++, zen.getCreatedBy(), style);
-            createCell(row, columnCount++, zen.getUpdatedTime().toString(), style);
-            createCell(row, columnCount++, zen.getUpdatedBy(), style);
-            createCell(row, columnCount++, zen.getInActive(), style);
+            if (Arrays.asList(excelRequest.getColumnsVisible()).contains("ZenPack Name")) {
+                createCell(row, columnCount++, zen.getName(), style);
+                }if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Created Date")) {
+                    createCell(row, columnCount++, zen.getCreatedDate().toString(), style);
+                } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Created By")) {
+                    createCell(row, columnCount++, zen.getCreatedBy(), style);
+                } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Updated Time")) {
+                createCell(row, columnCount++, zen.getUpdatedTime().toString(), style);
+                } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Updated By")) {
+                createCell(row, columnCount++, zen.getUpdatedBy(), style);
+                } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Status")) {
+                createCell(row, columnCount++, zen.getInActive(), style);
+                }
+                if (Arrays.asList(excelRequest.getColumnsVisible()).isEmpty()) {
+                createCell(row, columnCount++, zen.getName(), style);
+                createCell(row, columnCount++, zen.getCreatedDate().toString(), style);
+                createCell(row, columnCount++, zen.getCreatedBy(), style);
+                createCell(row, columnCount++, zen.getUpdatedTime().toString(), style);
+                createCell(row, columnCount++, zen.getUpdatedBy(), style);
+                createCell(row, columnCount++, zen.getInActive(), style);
+            }
         }
     }
-
-    public void export(SearchFilterDto searchFilterDto, HttpServletResponse response) throws IOException {
-        writeHeaderLine();
-        writeDataLines();
+    public void export(ExcelRequest excelRequest, HttpServletResponse response) throws IOException {
+        writeHeaderLine(excelRequest);
+        writeDataLines(excelRequest);
 
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);

@@ -1,23 +1,21 @@
 package com.ZenPack.controller;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import com.ZenPack.Dto.*;
 import com.ZenPack.Dto.FilterNewDTO.SpecificationResponse;
-import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
+import com.ZenPack.Dto.SearchFilterDto;
+import com.ZenPack.excel.ExcelRequest;
 import com.ZenPack.excel.ZenPackExcelExporter;
 import com.ZenPack.exception.ZenPackException;
 import com.ZenPack.repository.ExcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -123,19 +121,20 @@ public class ZenPackController {
     	return request;
     }
     @GetMapping("/export/excel")//new one
-    public void exportToExcel(@RequestBody SearchFilterDto searchFilterDto, HttpServletResponse response) throws IOException {
+    public void exportToExcel(@RequestBody ExcelRequest excelRequest, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
         String headervalue = "attachment; filename=ZenPack_info"+currentDateTime+".xlsx";
-        response.setContentType(searchFilterDto.toString());
+        response.setContentType(excelRequest.toString());
         response.setHeader(headerKey, headervalue);
-        PageRequest pageRequest = PageRequest.of(searchFilterDto.getStartRow(),searchFilterDto.getEndRow());
+        PageRequest pageRequest = PageRequest.of(excelRequest.getStartRow(),excelRequest.getEndRow());
         Page<ZenPack> listStudent = excelRepository.findAll(pageRequest);
         ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent.getContent());
-        exp.export(searchFilterDto,response);
+        exp.export(excelRequest, response);
+
     }
 
     @DeleteMapping("/set_in_active/{zenPackId}")

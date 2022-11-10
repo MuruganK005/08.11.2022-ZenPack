@@ -3,16 +3,22 @@ package com.ZenPack.service.Impl;
 import com.ZenPack.Dto.FilterDTO;
 import com.ZenPack.Dto.FilterNewDTO.SpecificationResponse;
 import com.ZenPack.Dto.ZenPackFilterDTO;
-import com.ZenPack.Dto.filterRequestDTO.SearchFilterDto;
+import com.ZenPack.Dto.SearchFilterDto;
+import com.ZenPack.Dto.ZenPackReportDto;
 import com.ZenPack.Specification.ReportNewSpecification;
 import com.ZenPack.model.Report;
+import com.ZenPack.model.ZenPackReport;
 import com.ZenPack.repository.ReportRepository;
+import com.ZenPack.repository.ZenPackReportRepository;
 import com.ZenPack.service.Services.ReportService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +28,8 @@ import java.util.List;
 public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private ZenPackReportRepository zenPackReportRepository;
 
     @Autowired
     private ReportNewSpecification specification;
@@ -58,5 +66,28 @@ public class ReportServiceImpl implements ReportService {
             pageRequest = PageRequest.of(page, size, Sort.Direction.DESC, zenpackFilterDTO.getField());
         }
         return reportRepository.findAll(spec, pageRequest);}
+
+
+    @Override
+    public ResponseEntity<ZenPackReportDto> save(ZenPackReportDto zenPackReportDto) {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setAmbiguityIgnored(true);
+        ZenPackReport zenPackReport =mapper.map(zenPackReportDto,ZenPackReport.class);
+        zenPackReport.setAnalytics(zenPackReportDto.isAnalytics());
+        zenPackReport.setZenPackReportId(zenPackReportDto.getZenpackReportId());
+        zenPackReport.setQuickAccess(zenPackReportDto.isQuickAccess());
+        zenPackReport.setDashboard(zenPackReportDto.isDashBoard());
+        zenPackReport.setAddToFavorite(zenPackReportDto.isAnalytics());
+        zenPackReport.setReports(zenPackReportDto.getReports());
+        zenPackReport.setZenPackReportId(zenPackReportDto.getZenpackReportId());
+        zenPackReportRepository.save(zenPackReport);
+        zenPackReportDto.setZenpackReportId(zenPackReport.getZenPackReportId());
+        zenPackReportDto.setAnalytics(zenPackReport.isAnalytics());
+        zenPackReportDto.setQuickAccess(zenPackReport.isQuickAccess());
+        zenPackReportDto.setDashBoard(zenPackReport.isDashboard());
+        zenPackReportDto.setAddToFavorite(zenPackReport.isAddToFavorite());
+        zenPackReportDto.setFavoriteViewName(zenPackReport.getFavoriteViewName());
+        return new ResponseEntity<>(zenPackReportDto, HttpStatus.CREATED);
+    }
 }
     

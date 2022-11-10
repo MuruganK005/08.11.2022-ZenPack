@@ -1,9 +1,10 @@
-package com.ZenPack.Dto.filterRequestDTO;
+package com.ZenPack.Dto;
 
 import java.util.List;
 import java.util.Map;
 
 import com.ZenPack.Dto.SortSpecificationDto;
+import com.ZenPack.Dto.filterRequestDTO.ColumnVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
