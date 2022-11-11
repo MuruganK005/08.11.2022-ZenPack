@@ -27,10 +27,8 @@ public class ReportController {
     public SpecificationResponse getAllReport(@RequestBody SearchFilterDto filterDto){
         return service.getReports(filterDto);
     }
-
     @PostMapping("/createZenPackReport")
     public ResponseEntity<ZenPackReportDto> createZenPackReport(@RequestBody ZenPackReportDto zenPackReportDto){
         return service.save(zenPackReportDto);
     }
-
 }

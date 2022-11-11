@@ -1,5 +1,6 @@
 package com.ZenPack.excel;
 
+import com.ZenPack.Dto.SearchFilterDto;
 import com.ZenPack.model.ZenPack;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -23,13 +24,11 @@ public class ZenPackExcelExporter {      //new one
 
     private List<ZenPack> listZenPack;
 
-
     public ZenPackExcelExporter(List<ZenPack> listZenPack) {
         this.listZenPack = listZenPack;
         workbook = new XSSFWorkbook();
 
     }
-
     private void createCell(Row row, int columnCount, Object value, CellStyle style) {
         sheet.autoSizeColumn(columnCount);
         Cell cell = row.createCell(columnCount);
@@ -44,10 +43,8 @@ public class ZenPackExcelExporter {      //new one
         }
         cell.setCellStyle(style);
     }
-
-    private void writeHeaderLine(ExcelRequest excelRequest) {
+    private void writeHeaderLine(SearchFilterDto excelRequest) {
         sheet = workbook.createSheet("ZenPack");
-
         Row row = sheet.createRow(0);
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
@@ -59,7 +56,6 @@ public class ZenPackExcelExporter {      //new one
         createCell(row, 0, "ZenPack Information", style);
         sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 5));
         font.setFontHeightInPoints((short) (10));
-
         row = sheet.createRow(1);
         font.setBold(true);
         font.setFontHeight(16);
@@ -80,10 +76,9 @@ public class ZenPackExcelExporter {      //new one
         }  if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Updated By")) {
             createCell(row, column_Count, "Updated By", style);
             column_Count++;
-        }  if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Status")) {
-            createCell(row, column_Count, "Status", style);
+        }  if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Active")) {
+            createCell(row, column_Count, "Active", style);
             column_Count++;
-
         }
         if (Arrays.asList(excelRequest.getColumnsVisible()).isEmpty()) {
             createCell(row, 0, "ZenPack Name", style);
@@ -91,22 +86,18 @@ public class ZenPackExcelExporter {      //new one
             createCell(row, 2, "Created By", style);
             createCell(row, 3, "Updated Time", style);
             createCell(row, 4, "Updated By", style);
-            createCell(row, 5, "Status", style);
+            createCell(row, 5, "Active", style);
         }
     }
-
-    private void writeDataLines(ExcelRequest excelRequest) {
+    private void writeDataLines(SearchFilterDto excelRequest) {
         int rowCount = 2;
-
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setFontHeight(16);
         style.setFont(font);
-
         Date dNow = new Date();
         SimpleDateFormat ft =
                 new SimpleDateFormat("E yyyy.MM.dd 'at' hh:mm:ss a zzz");
-
         System.out.println("Current Date: " + ft.format(dNow));
         for (ZenPack zen : listZenPack) {
             Row row = sheet.createRow(rowCount++);
@@ -121,7 +112,7 @@ public class ZenPackExcelExporter {      //new one
                 createCell(row, columnCount++, zen.getUpdatedTime().toString(), style);
                 } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Updated By")) {
                 createCell(row, columnCount++, zen.getUpdatedBy(), style);
-                } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Status")) {
+                } if (Arrays.asList(excelRequest.getColumnsVisible()).contains("Active")) {
                 createCell(row, columnCount++, zen.getInActive(), style);
                 }
                 if (Arrays.asList(excelRequest.getColumnsVisible()).isEmpty()) {
@@ -134,10 +125,9 @@ public class ZenPackExcelExporter {      //new one
             }
         }
     }
-    public void export(ExcelRequest excelRequest, HttpServletResponse response) throws IOException {
+    public void export(SearchFilterDto excelRequest, HttpServletResponse response) throws IOException {
         writeHeaderLine(excelRequest);
         writeDataLines(excelRequest);
-
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
         workbook.close();

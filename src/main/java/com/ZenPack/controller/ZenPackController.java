@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import com.ZenPack.Dto.*;
 import com.ZenPack.Dto.FilterNewDTO.SpecificationResponse;
 import com.ZenPack.Dto.SearchFilterDto;
+import com.ZenPack.Specification.*;
 import com.ZenPack.excel.ExcelRequest;
 import com.ZenPack.excel.ZenPackExcelExporter;
 import com.ZenPack.exception.ZenPackException;
@@ -15,17 +16,12 @@ import com.ZenPack.repository.ExcelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ZenPack.Specification.FieldType;
-import com.ZenPack.Specification.FilterRequest;
-import com.ZenPack.Specification.SearchRequest;
-import com.ZenPack.Specification.SortDirection;
-import com.ZenPack.Specification.SortRequest;
-import com.ZenPack.Specification.ZenpackOperator;
 import com.ZenPack.model.Report;
 import com.ZenPack.model.ReportColumns;
 import com.ZenPack.model.ZenPack;
@@ -86,7 +82,6 @@ public class ZenPackController {
     }
     @PostMapping("/searchZenPack")
     public Page<ZenPack> searchZenPack(@RequestBody SearchFilterDto request) {
-    	
         return service.searchZenPack(getSearchRequest(request));
     }
     @GetMapping(value = "checkZenPackName",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -121,8 +116,7 @@ public class ZenPackController {
     	return request;
     }
     @GetMapping("/export/excel")//new one
-    public void exportToExcel(@RequestBody ExcelRequest excelRequest, HttpServletResponse response) throws IOException {
-
+    public void exportToExcel(@RequestBody SearchFilterDto excelRequest, HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
@@ -131,12 +125,22 @@ public class ZenPackController {
         response.setContentType(excelRequest.toString());
         response.setHeader(headerKey, headervalue);
         PageRequest pageRequest = PageRequest.of(excelRequest.getStartRow(),excelRequest.getEndRow());
+        Page<ZenPack> zenPacks=null;
+        if (excelRequest.getFilterModel() != null){
+           SearchRequest searchRequest= getSearchRequest(excelRequest);
+            SearchSpecification<ZenPack> specification = new SearchSpecification<>(searchRequest);
+            Pageable pageable = SearchSpecification.getPageable(excelRequest.getStartRow(), excelRequest.getEndRow());
+            zenPacks=excelRepository.findAll(specification, pageable);
+        }
         Page<ZenPack> listStudent = excelRepository.findAll(pageRequest);
-        ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent.getContent());
-        exp.export(excelRequest, response);
-
+        if (zenPacks !=null){
+            ZenPackExcelExporter exp = new ZenPackExcelExporter(zenPacks.getContent());
+            exp.export(excelRequest, response);
+        }else {
+            ZenPackExcelExporter exp = new ZenPackExcelExporter(listStudent.getContent());
+            exp.export(excelRequest, response);
+        }
     }
-
     @DeleteMapping("/set_in_active/{zenPackId}")
     public String setZenPackActiveOrInActive(@PathVariable Long zenPackId){
         return  service.setActiveOrInActive(zenPackId);

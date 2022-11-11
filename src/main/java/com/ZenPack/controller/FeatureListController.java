@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/v1")
 public class FeatureListController {
-
     @Autowired
     private FeaturedListServiceImpl service;
 
@@ -29,7 +27,6 @@ public class FeatureListController {
     public FeaturedList create(@RequestBody FeaturedList featuredList){
         return service.save(featuredList);
     }
-
 
     @GetMapping("/get_features")
     @ResponseStatus(HttpStatus.OK)
@@ -49,7 +46,6 @@ public class FeatureListController {
         return service.getListById(id);
     }
 
-
     @DeleteMapping("/deleteList/{id}")
     public String delete(@PathVariable int id){
         return service.deleteList(id);
@@ -65,12 +61,10 @@ public class FeatureListController {
                     savedList.setFeatureUrl(featuredList.getFeatureUrl());
                     savedList.setIcon(featuredList.getIcon());
                     savedList.setIsSettingMenu(featuredList.getIsSettingMenu());
-
                     FeaturedList updatedList = service.updatedList(savedList);
                     return new ResponseEntity<>(updatedList, HttpStatus.OK);
-
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
-    }
 
+    }
 }

@@ -2,7 +2,6 @@ package com.ZenPack.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchSpecification<T> implements Specification<T> {
 
     private static final long serialVersionUID = -9153865343320750644L;
-
     private final transient SearchRequest request;
 
     @Override
@@ -41,7 +39,6 @@ public class SearchSpecification<T> implements Specification<T> {
         query.orderBy(orders);
         return predicate;
     }
-
     public static Pageable getPageable(Integer page, Integer size) {
         return PageRequest.of(page == null ? 0: page, size == null || size ==0? 100 : size);
     }

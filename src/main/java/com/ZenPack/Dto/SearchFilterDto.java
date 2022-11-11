@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchFilterDto {
+
 	private Integer startRow;
 	private Integer endRow;
 	private List<String> rowGroupCols;
@@ -24,4 +25,6 @@ public class SearchFilterDto {
 	private List<ColumnVO> groupKeys;
 	private Map<String, Map<String,String>> filterModel;
 	private List<SortSpecificationDto> sortModel;
+	private String[] columnsVisible;
+
 }
